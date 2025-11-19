@@ -1,0 +1,13 @@
+{
+  "date": "2025-11-19T07:01:34.574Z",
+  "preset": "zeabur",
+  "framework": {
+    "name": "nitro",
+    "version": ""
+  },
+  "versions": {
+    "nitro": "3.0.1-alpha.1"
+  },
+  "commands": {},
+  "config": {}
+}

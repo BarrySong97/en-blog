@@ -1,0 +1,9 @@
+{
+  "containerized": false,
+  "routes": [
+    {
+      "src": ".*",
+      "dest": "/__nitro"
+    }
+  ]
+}

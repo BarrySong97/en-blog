@@ -6,6 +6,7 @@
     "dev": "vite dev --port 3000",
     "build": "vite build",
     "serve": "vite preview",
+    "start": "node .output/server/index.js",
     "test": "vitest run",
     "format": "biome format",
     "lint": "biome lint",

@@ -20,10 +20,10 @@ ENV NODE_ENV=production
 WORKDIR /app
 
 # 仅复制运行需要的文件
-COPY --from=builder /app/dist ./dist
+COPY --from=builder /app/.output ./output
 COPY --from=builder /app/node_modules ./node_modules
 COPY package.json pnpm-lock.yaml ./
 
 USER node
 EXPOSE 3000
-CMD ["sh", "-c", "node .output/server/server.mjs"]
+CMD ["sh", "-c", "node output/server/index.mjs"]

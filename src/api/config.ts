@@ -2,7 +2,7 @@
 // API Configuration
 const isServer = typeof window === "undefined";
 export const API_URL = isServer
-  ? process.env.VITE_API_URL:""
+  ? process.env.API_URL:""
 
 
 

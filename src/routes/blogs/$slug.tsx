@@ -10,12 +10,21 @@ import {
   type HeadingNode,
 } from "@/components/richtext/get-headings";
 import { ImageWithFallback } from "@/components/common/ImageWithFallback";
-import { Media } from "@/payload-types";
-
+import { Blog, Media } from "@/payload-types";
+import { createServerFn, OptionalFetcher } from "@tanstack/react-start";
+const getBlogBySlugInSeverFn = createServerFn()
+  .inputValidator((data: { slug: string }) => data)
+  .handler(({ data }) => {
+    return blogService.getBlogBySlug(data.slug) as unknown as OptionalFetcher<
+      undefined,
+      { slug: string },
+      Blog
+    >;
+  });
 const blogQueryOptions = (slug: string) =>
   queryOptions({
     queryKey: ["blogs", "detail", slug],
-    queryFn: () => blogService.getBlogBySlug(slug),
+    queryFn: () => getBlogBySlugInSeverFn({ data: { slug } }),
   });
 
 export const Route = createFileRoute("/blogs/$slug")({
@@ -27,7 +36,9 @@ export const Route = createFileRoute("/blogs/$slug")({
 
 function BlogPost() {
   const { slug } = Route.useParams();
-  const { data } = useSuspenseQuery(blogQueryOptions(slug));
+  const { data } = useSuspenseQuery(blogQueryOptions(slug)) as unknown as {
+    data: { docs: Blog[] };
+  };
   const article = data.docs[0];
 
   if (!article) {

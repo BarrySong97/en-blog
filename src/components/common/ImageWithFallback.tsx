@@ -20,7 +20,9 @@ export const ImageWithFallback = ({
   const [error, setError] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
   const { image } = props;
-  const url = `${process.env.VITE_API_URL?.replace("/api", "")}${image?.url}`;
+  const url = `${import.meta.env.VITE_API_URL?.replace("/api", "")}${
+    image?.url
+  }`;
   const blurhash = image?.blurhash;
   const blurImage = blurhash ? blurHashToDataURL(blurhash) : null;
 

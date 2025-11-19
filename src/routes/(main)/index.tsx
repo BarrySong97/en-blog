@@ -1,16 +1,24 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
-import { blogService } from "@/api/blogs";
+import { BlogsResponse, blogService } from "@/api/blogs";
 import BlogList from "@/components/home/blog-list";
 import type { Article } from "@/data/articles";
-import type { Blog } from "@/payload-types";
+import type { Blog, Media } from "@/payload-types";
+import { OptionalFetcher, createServerFn } from "@tanstack/react-start";
+const getBlogsInSeverFn = createServerFn().handler(() => {
+  return blogService.getBlogs() as unknown as OptionalFetcher<
+    undefined,
+    undefined,
+    BlogsResponse
+  >;
+});
 
 const blogsQueryOptions = queryOptions({
   queryKey: ["blogs"],
-  queryFn: () => blogService.getBlogs(),
+  queryFn: getBlogsInSeverFn,
 });
 
-export const Route = createFileRoute("/_main/")({
+export const Route = createFileRoute("/(main)/")({
   component: HomePage,
   loader: async ({ context: { queryClient } }) => {
     await queryClient.ensureQueryData(blogsQueryOptions);
@@ -18,16 +26,13 @@ export const Route = createFileRoute("/_main/")({
 });
 
 function HomePage() {
-  const { data } = useSuspenseQuery(blogsQueryOptions);
+  const { data } = useSuspenseQuery(blogsQueryOptions) as unknown as {
+    data: BlogsResponse;
+  };
 
   // Transform Blog[] to Article[] for compatibility with BlogItem
   const articles: Article[] =
     data?.docs.map((blog: Blog) => {
-      const coverUrl =
-        typeof blog.coverImage === "object" && blog.coverImage?.url
-          ? blog.coverImage.url
-          : "";
-
       return {
         id: String(blog.id),
         slug: blog.slug,
@@ -40,7 +45,7 @@ function HomePage() {
           month: "short",
           day: "numeric",
         }),
-        cover: coverUrl,
+        cover: blog.coverImage as Media,
       };
     }) || [];
 

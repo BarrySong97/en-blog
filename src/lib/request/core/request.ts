@@ -324,7 +324,6 @@ export const request = <T>(
   return new CancelablePromise(async (resolve, reject, onCancel) => {
     try {
       const url = getUrl(config, options);
-      console.log(url)
       const formData = getFormData(options);
       const body = getRequestBody(options);
       const headers = await getHeaders(config, options);

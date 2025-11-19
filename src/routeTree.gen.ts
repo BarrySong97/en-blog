@@ -9,56 +9,56 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as MainRouteImport } from './routes/_main'
-import { Route as MainIndexRouteImport } from './routes/_main/index'
+import { Route as mainRouteRouteImport } from './routes/(main)/route'
+import { Route as mainIndexRouteImport } from './routes/(main)/index'
 import { Route as BlogsSlugRouteImport } from './routes/blogs/$slug'
-import { Route as MainProductsRouteImport } from './routes/_main/products'
-import { Route as MainAboutRouteImport } from './routes/_main/about'
+import { Route as mainProductsRouteImport } from './routes/(main)/products'
+import { Route as mainAboutRouteImport } from './routes/(main)/about'
 
-const MainRoute = MainRouteImport.update({
-  id: '/_main',
+const mainRouteRoute = mainRouteRouteImport.update({
+  id: '/(main)',
   getParentRoute: () => rootRouteImport,
 } as any)
-const MainIndexRoute = MainIndexRouteImport.update({
+const mainIndexRoute = mainIndexRouteImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => MainRoute,
+  getParentRoute: () => mainRouteRoute,
 } as any)
 const BlogsSlugRoute = BlogsSlugRouteImport.update({
   id: '/blogs/$slug',
   path: '/blogs/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
-const MainProductsRoute = MainProductsRouteImport.update({
+const mainProductsRoute = mainProductsRouteImport.update({
   id: '/products',
   path: '/products',
-  getParentRoute: () => MainRoute,
+  getParentRoute: () => mainRouteRoute,
 } as any)
-const MainAboutRoute = MainAboutRouteImport.update({
+const mainAboutRoute = mainAboutRouteImport.update({
   id: '/about',
   path: '/about',
-  getParentRoute: () => MainRoute,
+  getParentRoute: () => mainRouteRoute,
 } as any)
 
 export interface FileRoutesByFullPath {
-  '/about': typeof MainAboutRoute
-  '/products': typeof MainProductsRoute
+  '/about': typeof mainAboutRoute
+  '/products': typeof mainProductsRoute
   '/blogs/$slug': typeof BlogsSlugRoute
-  '/': typeof MainIndexRoute
+  '/': typeof mainIndexRoute
 }
 export interface FileRoutesByTo {
-  '/about': typeof MainAboutRoute
-  '/products': typeof MainProductsRoute
+  '/about': typeof mainAboutRoute
+  '/products': typeof mainProductsRoute
   '/blogs/$slug': typeof BlogsSlugRoute
-  '/': typeof MainIndexRoute
+  '/': typeof mainIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
-  '/_main': typeof MainRouteWithChildren
-  '/_main/about': typeof MainAboutRoute
-  '/_main/products': typeof MainProductsRoute
+  '/(main)': typeof mainRouteRouteWithChildren
+  '/(main)/about': typeof mainAboutRoute
+  '/(main)/products': typeof mainProductsRoute
   '/blogs/$slug': typeof BlogsSlugRoute
-  '/_main/': typeof MainIndexRoute
+  '/(main)/': typeof mainIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -67,33 +67,33 @@ export interface FileRouteTypes {
   to: '/about' | '/products' | '/blogs/$slug' | '/'
   id:
     | '__root__'
-    | '/_main'
-    | '/_main/about'
-    | '/_main/products'
+    | '/(main)'
+    | '/(main)/about'
+    | '/(main)/products'
     | '/blogs/$slug'
-    | '/_main/'
+    | '/(main)/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-  MainRoute: typeof MainRouteWithChildren
+  mainRouteRoute: typeof mainRouteRouteWithChildren
   BlogsSlugRoute: typeof BlogsSlugRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/_main': {
-      id: '/_main'
+    '/(main)': {
+      id: '/(main)'
       path: ''
       fullPath: ''
-      preLoaderRoute: typeof MainRouteImport
+      preLoaderRoute: typeof mainRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/_main/': {
-      id: '/_main/'
+    '/(main)/': {
+      id: '/(main)/'
       path: '/'
       fullPath: '/'
-      preLoaderRoute: typeof MainIndexRouteImport
-      parentRoute: typeof MainRoute
+      preLoaderRoute: typeof mainIndexRouteImport
+      parentRoute: typeof mainRouteRoute
     }
     '/blogs/$slug': {
       id: '/blogs/$slug'
@@ -102,39 +102,41 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof BlogsSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/_main/products': {
-      id: '/_main/products'
+    '/(main)/products': {
+      id: '/(main)/products'
       path: '/products'
       fullPath: '/products'
-      preLoaderRoute: typeof MainProductsRouteImport
-      parentRoute: typeof MainRoute
+      preLoaderRoute: typeof mainProductsRouteImport
+      parentRoute: typeof mainRouteRoute
     }
-    '/_main/about': {
-      id: '/_main/about'
+    '/(main)/about': {
+      id: '/(main)/about'
       path: '/about'
       fullPath: '/about'
-      preLoaderRoute: typeof MainAboutRouteImport
-      parentRoute: typeof MainRoute
+      preLoaderRoute: typeof mainAboutRouteImport
+      parentRoute: typeof mainRouteRoute
     }
   }
 }
 
-interface MainRouteChildren {
-  MainAboutRoute: typeof MainAboutRoute
-  MainProductsRoute: typeof MainProductsRoute
-  MainIndexRoute: typeof MainIndexRoute
+interface mainRouteRouteChildren {
+  mainAboutRoute: typeof mainAboutRoute
+  mainProductsRoute: typeof mainProductsRoute
+  mainIndexRoute: typeof mainIndexRoute
 }
 
-const MainRouteChildren: MainRouteChildren = {
-  MainAboutRoute: MainAboutRoute,
-  MainProductsRoute: MainProductsRoute,
-  MainIndexRoute: MainIndexRoute,
+const mainRouteRouteChildren: mainRouteRouteChildren = {
+  mainAboutRoute: mainAboutRoute,
+  mainProductsRoute: mainProductsRoute,
+  mainIndexRoute: mainIndexRoute,
 }
 
-const MainRouteWithChildren = MainRoute._addFileChildren(MainRouteChildren)
+const mainRouteRouteWithChildren = mainRouteRoute._addFileChildren(
+  mainRouteRouteChildren,
+)
 
 const rootRouteChildren: RootRouteChildren = {
-  MainRoute: MainRouteWithChildren,
+  mainRouteRoute: mainRouteRouteWithChildren,
   BlogsSlugRoute: BlogsSlugRoute,
 }
 export const routeTree = rootRouteImport

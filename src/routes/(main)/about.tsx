@@ -3,7 +3,7 @@ import { motion } from "motion/react";
 import { Mail, Github, ArrowUpRight } from "lucide-react";
 import { SectionTitle, Paragraph } from "../../components/ui/typography";
 
-export const Route = createFileRoute("/_main/about")({
+export const Route = createFileRoute("/(main)/about")({
   component: AboutPage,
 });
 

@@ -1,6 +1,8 @@
 import { Link } from "@tanstack/react-router";
 import { motion } from "motion/react";
 import type { Article } from "@/data/articles";
+import { ImageWithFallback } from "../common/ImageWithFallback";
+import { Media } from "@/payload-types";
 
 interface BlogItemProps {
   article: Article;
@@ -24,10 +26,8 @@ export default function BlogItem({ article }: BlogItemProps) {
         <div className="flex gap-6 items-start">
           {/* Cover Image */}
           <div className="w-48 h-32 shrink-0 overflow-hidden rounded-lg bg-gray-100">
-            <img
-              src={`${process.env.VITE_API_URL?.replace("/api", "")}${
-                article.cover
-              }`}
+            <ImageWithFallback
+              image={article.cover as Media}
               alt={article.title}
               className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
             />

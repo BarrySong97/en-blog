@@ -3,6 +3,7 @@ import {
   Scripts,
   createRootRouteWithContext,
   Outlet,
+  ClientOnly,
 } from "@tanstack/react-router";
 import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
 import { TanStackDevtools } from "@tanstack/react-devtools";
@@ -51,7 +52,8 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
       },
     ],
   }),
-
+  notFoundComponent: () => <div>404</div>,
+  pendingComponent: () => <div>Loading...</div>,
   component: RootComponent,
   shellComponent: RootDocument,
 });
@@ -62,8 +64,11 @@ import LenisScroll from "@/components/layout/lenis-scroll";
 function RootComponent() {
   return (
     <>
-      <LenisScroll />
-      <CustomCursor />
+      <ClientOnly>
+        <LenisScroll />
+        <CustomCursor />
+      </ClientOnly>
+
       <Outlet />
     </>
   );

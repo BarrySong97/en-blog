@@ -26,4 +26,4 @@ COPY package.json pnpm-lock.yaml ./
 
 USER node
 EXPOSE 3000
-CMD ["sh", "-c", "node dist/server/server.js"]
+CMD ["sh", "-c", "node .output/server/server.mjs"]

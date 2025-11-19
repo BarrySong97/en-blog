@@ -12,7 +12,7 @@ const config = defineConfig({
       projects: ["./tsconfig.json"],
     }),
     tailwindcss(),
-    nitro({ preset: "zeabur" }),
+    nitro({ preset: "node-server" }),
     tanstackStart(),
     viteReact(),
   ],

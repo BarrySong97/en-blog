@@ -1,23 +1,10 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
-import { BlogsResponse, blogService } from "@/api/blogs";
+import { useSuspenseQuery } from "@tanstack/react-query";
+import { BlogsResponse } from "@/api/blogs";
 import BlogList from "@/components/home/blog-list";
 import type { Article } from "@/data/articles";
 import type { Blog, Media } from "@/payload-types";
-import { OptionalFetcher, createServerFn } from "@tanstack/react-start";
-
-const getBlogsInSeverFn = createServerFn().handler(() => {
-  return blogService.getBlogs() as unknown as OptionalFetcher<
-    undefined,
-    undefined,
-    BlogsResponse
-  >;
-});
-
-const blogsQueryOptions = queryOptions({
-  queryKey: ["blogs"],
-  queryFn: getBlogsInSeverFn,
-});
+import { blogsQueryOptions } from "@/serverfn/blogs";
 
 export const Route = createFileRoute("/(main)/")({
   component: HomePage,

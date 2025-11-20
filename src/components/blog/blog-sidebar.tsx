@@ -1,15 +1,20 @@
-import { ClientOnly, Link } from "@tanstack/react-router";
+import { Link } from "@tanstack/react-router";
 import { motion } from "motion/react";
 import { ArrowLeft } from "lucide-react";
 import { ImageWithFallback } from "@/components/common/ImageWithFallback";
-import { Blog, Media } from "@/payload-types";
-import { PhotoProvider, PhotoView } from "react-photo-view";
+import { Blog, Media, Home } from "@/payload-types";
+import { useSuspenseQuery } from "@tanstack/react-query";
+import { homeQueryOptions } from "@/serverfn/home";
+import { getImageUrl } from "@/lib/get-image-url";
 
 interface BlogSidebarProps {
   article: Blog;
 }
 
 export function BlogSidebar({ article }: BlogSidebarProps) {
+  const { data: homeData } = useSuspenseQuery(homeQueryOptions) as unknown as {
+    data: Home;
+  };
   return (
     <motion.div
       className="col-span-4 h-screen sticky top-0 p-12 flex flex-col justify-between border-r border-gray-200 bg-[#f2f2f2] z-10"
@@ -64,7 +69,7 @@ export function BlogSidebar({ article }: BlogSidebarProps) {
           <div className="flex items-center gap-3">
             <div className="w-12 h-12 rounded-full bg-gray-200 overflow-hidden">
               <img
-                src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&q=80&w=1760"
+                src={getImageUrl(homeData.avatar.url ?? "")}
                 alt="Author"
                 className="w-full h-full object-cover"
               />

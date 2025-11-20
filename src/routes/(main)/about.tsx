@@ -1,68 +1,17 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
+import { useSuspenseQuery } from "@tanstack/react-query";
 import { motion } from "motion/react";
 import { Mail, Github, ArrowUpRight } from "lucide-react";
 import { SectionTitle, Paragraph } from "../../components/ui/typography";
-import { aboutService } from "@/api/about";
-import { experienceService, ExperiencesResponse } from "@/api/experiences";
-import { skillService, SkillsResponse } from "@/api/skills";
-import { About, Home } from "@/payload-types";
-import { createServerFn, OptionalFetcher } from "@tanstack/react-start";
+import { ExperiencesResponse } from "@/api/experiences";
+import { SkillsResponse } from "@/api/skills";
+import { Home } from "@/payload-types";
 import { getImageUrl } from "@/lib/get-image-url";
 import { Icon } from "@iconify/react";
-import { homeService } from "@/api";
-
-// Server functions
-const getAboutInServerFn = createServerFn().handler(() => {
-  return aboutService.getAbout() as unknown as OptionalFetcher<
-    undefined,
-    undefined,
-    About
-  >;
-});
-const getHomeInSeverFn = createServerFn().handler(() => {
-  return homeService.getHome() as unknown as OptionalFetcher<
-    undefined,
-    undefined,
-    Home
-  >;
-});
-const getExperiencesInServerFn = createServerFn().handler(() => {
-  return experienceService.getExperiences() as unknown as OptionalFetcher<
-    undefined,
-    undefined,
-    ExperiencesResponse
-  >;
-});
-
-const getSkillsInServerFn = createServerFn().handler(() => {
-  return skillService.getSkills() as unknown as OptionalFetcher<
-    undefined,
-    undefined,
-    SkillsResponse
-  >;
-});
-
-// Query options
-const aboutQueryOptions = queryOptions({
-  queryKey: ["about"],
-  queryFn: getAboutInServerFn,
-});
-
-const experiencesQueryOptions = queryOptions({
-  queryKey: ["experiences"],
-  queryFn: getExperiencesInServerFn,
-});
-
-const skillsQueryOptions = queryOptions({
-  queryKey: ["skills"],
-  queryFn: getSkillsInServerFn,
-});
-
-const homeQueryOptions = queryOptions({
-  queryKey: ["home"],
-  queryFn: getHomeInSeverFn,
-});
+import { aboutQueryOptions } from "@/serverfn/about";
+import { homeQueryOptions } from "@/serverfn/home";
+import { experiencesQueryOptions } from "@/serverfn/experiences";
+import { skillsQueryOptions } from "@/serverfn/skills";
 
 export const Route = createFileRoute("/(main)/about")({
   component: AboutPage,

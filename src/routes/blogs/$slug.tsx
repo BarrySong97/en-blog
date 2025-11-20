@@ -1,35 +1,24 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
+import { useSuspenseQuery } from "@tanstack/react-query";
 import Right from "@/components/layout/right";
 import { motion } from "motion/react";
 import BlogContent from "@/components/blog/Content";
-import { blogService } from "@/api/blogs";
 import {
   getHeadings,
   type HeadingNode,
 } from "@/components/richtext/get-headings";
 import { Blog } from "@/payload-types";
-import { createServerFn, OptionalFetcher } from "@tanstack/react-start";
 import { BlogSidebar } from "@/components/blog/blog-sidebar";
-const getBlogBySlugInSeverFn = createServerFn()
-  .inputValidator((data: { slug: string }) => data)
-  .handler(({ data }) => {
-    return blogService.getBlogBySlug(data.slug) as unknown as OptionalFetcher<
-      undefined,
-      { slug: string },
-      Blog
-    >;
-  });
-const blogQueryOptions = (slug: string) =>
-  queryOptions({
-    queryKey: ["blogs", "detail", slug],
-    queryFn: () => getBlogBySlugInSeverFn({ data: { slug } }),
-  });
+import { blogQueryOptions } from "@/serverfn/blog";
+import { homeQueryOptions } from "@/serverfn/home";
 
 export const Route = createFileRoute("/blogs/$slug")({
   component: BlogPost,
   loader: async ({ context: { queryClient }, params: { slug } }) => {
-    await queryClient.ensureQueryData(blogQueryOptions(slug));
+    await Promise.all([
+      queryClient.ensureQueryData(blogQueryOptions(slug)),
+      queryClient.ensureQueryData(homeQueryOptions),
+    ]);
   },
 });
 

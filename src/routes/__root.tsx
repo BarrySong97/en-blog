@@ -85,7 +85,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
         style={{ margin: 0, padding: 0 }}
       >
         {children}
-        <TanStackDevtools
+        {/* <TanStackDevtools
           config={{
             position: "bottom-right",
           }}
@@ -96,7 +96,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
             },
             TanStackQueryDevtools,
           ]}
-        />
+        /> */}
         <Scripts />
       </body>
     </html>

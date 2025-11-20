@@ -27,7 +27,7 @@ export default function BlogItem({ article }: BlogItemProps) {
           {/* Cover Image */}
           <div className="w-48 h-32 shrink-0 overflow-hidden rounded-lg bg-gray-100">
             <ImageWithFallback
-              image={article.cover as Media}
+              image={article.cover.sizes?.thumbnail as Media}
               alt={article.title}
               className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
             />

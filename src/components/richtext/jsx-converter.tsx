@@ -10,7 +10,6 @@ import { isObject } from "@/lib/utils";
 import { CodeBlock } from "@/blocks/Code/Component";
 import HorizentalImages from "@/blocks/hotizental-image/horizental-image";
 import { GithubLinkCard } from "@/blocks/github-link/github-link";
-import { PhotoProvider, PhotoView } from "react-photo-view";
 import { ImageWithFallback } from "../common/ImageWithFallback";
 import { Blog, Media } from "@/payload-types";
 export const CustomUploadComponent: React.FC<{
@@ -22,18 +21,20 @@ export const CustomUploadComponent: React.FC<{
       return null;
     }
     const { alt, height, url, width } = uploadDoc as any;
+
+    if (!url) {
+      return null;
+    }
     return (
-      <PhotoProvider>
-        <PhotoView src={url}>
-          <ImageWithFallback
-            className="cursor-pointer"
-            alt={alt ?? "img"}
-            height={height}
-            image={uploadDoc as Media}
-            width={width}
-          />
-        </PhotoView>
-      </PhotoProvider>
+      <ImageWithFallback
+        className="cursor-pointer"
+        alt={alt ?? "img"}
+        height={height}
+        image={
+          uploadDoc.sizes?.card ? uploadDoc.sizes?.tablet : (uploadDoc as Media)
+        }
+        width={width}
+      />
     );
   }
 

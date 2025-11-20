@@ -1,48 +1,103 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 import { motion } from "motion/react";
 import { Mail, Github, ArrowUpRight } from "lucide-react";
 import { SectionTitle, Paragraph } from "../../components/ui/typography";
+import { aboutService } from "@/api/about";
+import { experienceService, ExperiencesResponse } from "@/api/experiences";
+import { skillService, SkillsResponse } from "@/api/skills";
+import { About, Home } from "@/payload-types";
+import { createServerFn, OptionalFetcher } from "@tanstack/react-start";
+import { getImageUrl } from "@/lib/get-image-url";
+import { Icon } from "@iconify/react";
+import { homeService } from "@/api";
+
+// Server functions
+const getAboutInServerFn = createServerFn().handler(() => {
+  return aboutService.getAbout() as unknown as OptionalFetcher<
+    undefined,
+    undefined,
+    About
+  >;
+});
+const getHomeInSeverFn = createServerFn().handler(() => {
+  return homeService.getHome() as unknown as OptionalFetcher<
+    undefined,
+    undefined,
+    Home
+  >;
+});
+const getExperiencesInServerFn = createServerFn().handler(() => {
+  return experienceService.getExperiences() as unknown as OptionalFetcher<
+    undefined,
+    undefined,
+    ExperiencesResponse
+  >;
+});
+
+const getSkillsInServerFn = createServerFn().handler(() => {
+  return skillService.getSkills() as unknown as OptionalFetcher<
+    undefined,
+    undefined,
+    SkillsResponse
+  >;
+});
+
+// Query options
+const aboutQueryOptions = queryOptions({
+  queryKey: ["about"],
+  queryFn: getAboutInServerFn,
+});
+
+const experiencesQueryOptions = queryOptions({
+  queryKey: ["experiences"],
+  queryFn: getExperiencesInServerFn,
+});
+
+const skillsQueryOptions = queryOptions({
+  queryKey: ["skills"],
+  queryFn: getSkillsInServerFn,
+});
+
+const homeQueryOptions = queryOptions({
+  queryKey: ["home"],
+  queryFn: getHomeInSeverFn,
+});
 
 export const Route = createFileRoute("/(main)/about")({
   component: AboutPage,
+  loader: async ({ context: { queryClient } }) => {
+    await Promise.all([
+      queryClient.ensureQueryData(aboutQueryOptions),
+      queryClient.ensureQueryData(experiencesQueryOptions),
+      queryClient.ensureQueryData(skillsQueryOptions),
+      queryClient.ensureQueryData(homeQueryOptions),
+    ]);
+  },
 });
 
 function AboutPage() {
-  const experiences = [
-    {
-      role: "Senior Frontend Developer",
-      company: "Tech Corp",
-      period: "2021 - Present",
-      description:
-        "Leading the frontend team, architectural decision making, and mentoring junior developers.",
-      logo: "https://ui-avatars.com/api/?name=TC&background=random",
-      url: "https://example.com",
-    },
-    {
-      role: "Frontend Developer",
-      company: "Startup Inc",
-      period: "2019 - 2021",
-      description:
-        "Built key features for the main product using React and TypeScript.",
-      logo: "https://ui-avatars.com/api/?name=SI&background=random",
-      url: "https://example.com",
-    },
-  ];
+  const { data: experiencesData } = useSuspenseQuery(
+    experiencesQueryOptions
+  ) as unknown as {
+    data: ExperiencesResponse;
+  };
 
-  const skills = [
-    "React",
-    "TypeScript",
-    "Next.js",
-    "TanStack",
-    "TailwindCSS",
-    "Node.js",
-    "PostgreSQL",
-    "Framer Motion",
-  ];
+  const { data: skillsData } = useSuspenseQuery(
+    skillsQueryOptions
+  ) as unknown as {
+    data: SkillsResponse;
+  };
+
+  const { data: homeData } = useSuspenseQuery(homeQueryOptions) as unknown as {
+    data: Home;
+  };
+  const experiences = experiencesData?.docs || [];
+  const skills = skillsData?.docs || [];
 
   return (
     <div className="flex flex-col gap-16 pb-20 max-w-4xl">
-      {/* Header / Intro */}
+      {/* Header / Intro - 从 About content 渲染 */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -50,17 +105,12 @@ function AboutPage() {
         className="flex flex-col gap-6"
       >
         <SectionTitle>ABOUT ME</SectionTitle>
-        <Paragraph>
-          I'm Barry Song, a developer based in Digital World. I specialize in
-          the React ecosystem and enjoy solving complex problems with simple,
-          elegant solutions. When I'm not coding, you can find me exploring new
-          technologies or contributing to open source.
-        </Paragraph>
+        <Paragraph>{homeData.about_description}</Paragraph>
       </motion.div>
 
       <div className="w-full h-px bg-gray-200" />
 
-      {/* Experience */}
+      {/* Experience - 使用真实数据 */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -70,27 +120,31 @@ function AboutPage() {
         <SectionTitle>EXPERIENCE</SectionTitle>
 
         <div className="grid gap-8">
-          {experiences.map((exp, index) => (
-            <div key={index} className="flex flex-row items-start gap-6">
-              <img
-                src={exp.logo}
-                alt={`${exp.company} logo`}
-                className="w-12 h-12 rounded-lg object-cover bg-gray-100"
-              />
+          {experiences.map((exp) => (
+            <div key={exp.id} className="flex flex-row items-start gap-6">
+              {exp.companyLogo && typeof exp.companyLogo === "object" && (
+                <img
+                  src={getImageUrl(exp.companyLogo)}
+                  alt={`${exp.company} logo`}
+                  className="w-6 h-6 mt-1  object-cover bg-gray-100"
+                />
+              )}
               <div className="flex flex-col gap-1">
-                <h3 className="text-xl font-bold">{exp.role}</h3>
+                <h3 className="text-xl font-bold">{exp.position}</h3>
                 <a
-                  href={exp.url}
+                  href={exp.companyWebsite}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="font-medium hover:text-blue-600 hover:underline transition-colors w-fit"
+                  className="font-medium hover:text-green-600 hover:underline transition-colors w-fit"
                 >
                   {exp.company}
                 </a>
                 <div className="text-sm text-gray-500">{exp.period}</div>
-                <Paragraph className="mt-2 text-base">
-                  {exp.description}
-                </Paragraph>
+                {exp.companyLocation && (
+                  <div className="text-sm text-gray-500">
+                    {exp.companyLocation}
+                  </div>
+                )}
               </div>
             </div>
           ))}
@@ -99,7 +153,7 @@ function AboutPage() {
 
       <div className="w-full h-px bg-gray-200" />
 
-      {/* Skills */}
+      {/* Skills - 使用真实数据 */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -111,10 +165,11 @@ function AboutPage() {
         <div className="flex flex-wrap gap-3">
           {skills.map((skill) => (
             <span
-              key={skill}
-              className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg font-medium hover:bg-gray-200 transition-colors cursor-default"
+              key={skill.id}
+              className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg font-medium hover:bg-gray-200 transition-colors cursor-default flex items-center gap-2"
             >
-              {skill}
+              <Icon icon={skill.icon} className="w-5 h-5" />
+              {skill.name}
             </span>
           ))}
         </div>
@@ -142,7 +197,7 @@ function AboutPage() {
               </div>
               <div>
                 <div className="text-sm text-gray-500 font-medium">Email</div>
-                <div className="font-bold">barry@example.com</div>
+                <div className="font-bold">524000659@qq.com</div>
               </div>
             </div>
             <ArrowUpRight
@@ -163,7 +218,17 @@ function AboutPage() {
               </div>
               <div>
                 <div className="text-sm text-gray-500 font-medium">GitHub</div>
-                <div className="font-bold">@barrysong</div>
+                <a
+                  href={
+                    homeData.socialLinks.find((link) => link.name === "Github")
+                      ?.url ?? ""
+                  }
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="font-bold"
+                >
+                  @barrysong
+                </a>
               </div>
             </div>
             <ArrowUpRight

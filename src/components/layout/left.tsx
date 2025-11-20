@@ -1,8 +1,10 @@
+import { getImageUrl } from "@/lib/get-image-url";
+import { Home } from "@/payload-types";
 import { Link, useRouterState } from "@tanstack/react-router";
-import { Github, Twitter, Linkedin, Mail } from "lucide-react";
+import { Github, Twitter } from "lucide-react";
 import { motion } from "motion/react";
 
-export default function Left() {
+export default function Left({ homeData }: { homeData: Home }) {
   const router = useRouterState();
 
   const menuItems = [
@@ -10,6 +12,9 @@ export default function Left() {
     { label: "ABOUT", to: "/about" },
     { label: "PRODUCTS", to: "/products" },
   ];
+  const githubUrl = homeData.socialLinks.find(
+    (link) => link.name === "Github"
+  )?.url;
 
   return (
     <div className="col-span-4 h-screen sticky top-0 p-12 flex flex-col justify-between border-r border-gray-200 bg-[#f2f2f2]">
@@ -26,8 +31,8 @@ export default function Left() {
           }}
         >
           <img
-            src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&q=80&w=1760"
-            alt="Profile"
+            src={getImageUrl(homeData.avatar.url ?? "")}
+            alt="Barry Song's Avatar"
             className="w-full h-full object-cover"
           />
         </motion.div>
@@ -41,10 +46,7 @@ export default function Left() {
           }}
         >
           <h1 className="text-3xl font-bold text-gray-900">Barry Song</h1>
-          <p className="text-gray-500 mt-2 text-lg">
-            Frontend Developer & UI/UX Enthusiast. Creating digital experiences
-            that matter.
-          </p>
+          <p className="text-gray-500 mt-2 text-lg">{homeData.description}</p>
         </motion.div>
         <motion.div
           className="flex gap-4 text-gray-600"
@@ -57,32 +59,20 @@ export default function Left() {
           }}
         >
           <a
-            href="#"
+            href={githubUrl ?? ""}
             className="hover:text-black transition-colors"
+            target="_blank"
             data-cursor="-md"
           >
             <Github size={20} />
           </a>
           <a
-            href="#"
+            href={"https://x.com/SongBarry80670"}
             className="hover:text-black transition-colors"
+            target="_blank"
             data-cursor="-md"
           >
             <Twitter size={20} />
-          </a>
-          <a
-            href="#"
-            className="hover:text-black transition-colors"
-            data-cursor="-md"
-          >
-            <Linkedin size={20} />
-          </a>
-          <a
-            href="#"
-            className="hover:text-black transition-colors"
-            data-cursor="-md"
-          >
-            <Mail size={20} />
           </a>
         </motion.div>
       </div>

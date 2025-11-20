@@ -1,6 +1,6 @@
 "use client";
 import "payloadcms-lexical-ext/client/client.css";
-
+import "@/shiki.css";
 import { RichText } from "@payloadcms/richtext-lexical/react";
 import { Blog as BlogType } from "@/payload-types";
 import {

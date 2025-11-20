@@ -1,4 +1,4 @@
-import { Blog,  } from "@/payload-types";
+import { Blog } from "@/payload-types";
 import { stringify } from "qs-esm";
 import { endpoints } from "./config";
 import { request as __request } from "@/lib/request/core/request";
@@ -26,7 +26,7 @@ export type BlogFilters = {
 export const blogService = {
   // 获取博客列表
   getBlogs: (filters?: BlogFilters) => {
-    const query :Record<string, any> = {
+    const query: Record<string, any> = {
       status: {
         equals: "published",
       },
@@ -60,7 +60,7 @@ export const blogService = {
 
     return __request<BlogsResponse>(OpenAPI, {
       method: "GET",
-      url: `${endpoints.blogs}?${stringifiedQuery}`,
+      url: `${endpoints.blogs}?${stringifiedQuery}&locale=en`,
     });
   },
 

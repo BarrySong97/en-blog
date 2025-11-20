@@ -878,7 +878,9 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
 export interface Home {
   id: number;
   name: string;
+  title: string;
   short_description?: string | null;
+  about_description?: string;
   description: string;
   avatar: Media;
   socialLinks: {

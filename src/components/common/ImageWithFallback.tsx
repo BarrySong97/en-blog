@@ -20,9 +20,11 @@ export const ImageWithFallback = ({
   const [error, setError] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
   const { image } = props;
-  const url = `${import.meta.env.VITE_API_URL?.replace("/api", "")}${
-    image?.url
-  }`;
+  // 将 /api/media/file 替换为 MinIO 的 URL
+  const url = image?.url?.replace(
+    "/api/media/file",
+    "http://4realstorageapi.zeabur.app/blog"
+  );
   const blurhash = image?.blurhash;
   const blurImage = blurhash ? blurHashToDataURL(blurhash) : null;
 
@@ -39,7 +41,9 @@ export const ImageWithFallback = ({
   const handleLoad = () => {
     setIsLoaded(true);
   };
-
+  if (!url) {
+    return null;
+  }
   return (
     <Image
       src={error && !url ? "/imager-error.webp" : url!}

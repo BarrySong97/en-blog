@@ -5,6 +5,7 @@ import BlogList from "@/components/home/blog-list";
 import type { Article } from "@/data/articles";
 import type { Blog, Media } from "@/payload-types";
 import { OptionalFetcher, createServerFn } from "@tanstack/react-start";
+
 const getBlogsInSeverFn = createServerFn().handler(() => {
   return blogService.getBlogs() as unknown as OptionalFetcher<
     undefined,

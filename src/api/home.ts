@@ -7,7 +7,7 @@ export const homeService = {
   getHome: async () => {
     return __request<Home>(OpenAPI, {
       method: "GET",
-      url: endpoints.home,
+      url: `${endpoints.home}?locale=en`,
     });
   },
 };

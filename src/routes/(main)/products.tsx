@@ -55,9 +55,10 @@ function ProductsPage() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {products.map((product, index) => (
+        cooking
+        {/* {products.map((product, index) => (
           <ProductItem key={product.title} {...product} index={index} />
-        ))}
+        ))} */}
       </div>
     </div>
   );

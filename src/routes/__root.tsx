@@ -5,10 +5,6 @@ import {
   Outlet,
   ClientOnly,
 } from "@tanstack/react-router";
-import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
-import { TanStackDevtools } from "@tanstack/react-devtools";
-
-import TanStackQueryDevtools from "../integrations/tanstack-query/devtools";
 
 import appCss from "../styles.css?url";
 
@@ -30,6 +26,45 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
       },
       {
         title: "Barry Song's Blog",
+      },
+      {
+        name: "description",
+        content:
+          "Barry Song's personal blog sharing thoughts, tutorials, and insights on software development.",
+      },
+      {
+        property: "og:type",
+        content: "website",
+      },
+      {
+        property: "og:title",
+        content: "Barry Song's Blog",
+      },
+      {
+        property: "og:description",
+        content:
+          "Barry Song's personal blog sharing thoughts, tutorials, and insights on software development.",
+      },
+      {
+        property: "og:image",
+        content: "/og.webp",
+      },
+      {
+        name: "twitter:card",
+        content: "summary_large_image",
+      },
+      {
+        name: "twitter:title",
+        content: "Barry Song's Blog",
+      },
+      {
+        name: "twitter:description",
+        content:
+          "Barry Song's personal blog sharing thoughts, tutorials, and insights on software development.",
+      },
+      {
+        name: "twitter:image",
+        content: "/og.webp",
       },
     ],
     links: [

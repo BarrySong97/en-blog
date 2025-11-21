@@ -7,18 +7,86 @@ import {
   getHeadings,
   type HeadingNode,
 } from "@/components/richtext/get-headings";
-import { Blog } from "@/payload-types";
+import { Blog, Media } from "@/payload-types";
 import { BlogSidebar } from "@/components/blog/blog-sidebar";
 import { blogQueryOptions } from "@/serverfn/blog";
 import { homeQueryOptions } from "@/serverfn/home";
+import { getImageUrl } from "@/lib/get-image-url";
 
 export const Route = createFileRoute("/blogs/$slug")({
   component: BlogPost,
   loader: async ({ context: { queryClient }, params: { slug } }) => {
-    await Promise.all([
+    const [blogData] = await Promise.all([
       queryClient.ensureQueryData(blogQueryOptions(slug)),
       queryClient.ensureQueryData(homeQueryOptions),
     ]);
+
+    const fullBlog = (blogData as unknown as { docs: Blog[] })?.docs?.[0];
+    // Return only necessary fields for SEO to avoid recursive type issues with Blog interface
+    return {
+      blog: fullBlog
+        ? {
+            title: fullBlog.title,
+            excerpt: fullBlog.excerpt,
+            coverImage: fullBlog.coverImage,
+          }
+        : undefined,
+    };
+  },
+  head: ({ loaderData }) => {
+    const blog = loaderData?.blog;
+    console.log(blog);
+    if (!blog) {
+      console.log("no blog");
+      return {
+        title: "Barry Song's Blog",
+      };
+    }
+    return {
+      meta: [
+        {
+          title: `${blog.title} | Barry Song's Blog`,
+        },
+        {
+          name: "description",
+          content: blog.excerpt,
+        },
+        {
+          property: "og:title",
+          content: blog.title,
+        },
+        {
+          property: "og:description",
+          content: blog.excerpt,
+        },
+        {
+          property: "og:image",
+          content:
+            getImageUrl((blog.coverImage as Media)?.sizes?.tablet?.url ?? "") ||
+            "/og.webp",
+        },
+        {
+          property: "og:type",
+          content: "article",
+        },
+        {
+          name: "twitter:card",
+          content: "summary_large_image",
+        },
+        {
+          name: "twitter:title",
+          content: blog.title,
+        },
+        {
+          name: "twitter:description",
+          content: blog.excerpt,
+        },
+        {
+          name: "twitter:image",
+          content: (blog.coverImage as Media)?.url || "/og.webp",
+        },
+      ],
+    };
   },
 });
 
